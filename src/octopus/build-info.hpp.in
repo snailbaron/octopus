@@ -1,0 +1,7 @@
+#include <filesystem>
+
+namespace build_info {
+
+const std::filesystem::path assets = "@ASSETS_DIR@";
+
+} // namespace build_info

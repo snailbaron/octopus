@@ -1,0 +1,31 @@
+WarningsAsErrors: true
+ExtraArgs:
+    - -Wno-unknown-pragmas
+Checks: >
+    bugprone-*,
+    cert-*,
+    clang-analyzer-*,
+    concurrency-*,
+    cppcoreguidelines-*,
+    -cppcoreguidelines-pro-type-reinterpret-cast,
+    hicpp-*,
+    -hicpp-named-parameter,
+    -hicpp-signed-bitwise,
+    -hicpp-uppercase-literal-suffix,
+    -hicpp-use-nullptr,
+    llvm-*,
+    misc-*,
+    -misc-include-cleaner,
+    modernize-*,
+    -modernize-use-nullptr,
+    -modernize-use-trailing-return-type,
+    performance-*,
+    portability-*,
+    readability-*,
+    -readability-identifier-length,
+    -readability-named-parameter,
+    -readability-uppercase-literal-suffix,
+CheckOptions:
+    readability-implicit-bool-conversion.AllowPointerConditions: true
+
+# modernize-use-nullptr (aka hicpp-use-nullptr) Crashes VS2022
