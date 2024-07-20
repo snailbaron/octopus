@@ -3,7 +3,10 @@ configure_file(build-info.hpp.in include/build-info.hpp @ONLY)
 
 add_executable(octopus
     main.cpp
-)
+    random.cpp
+    task.cpp
+    world.cpp
+ "scene.cpp" "ai.cpp")
 target_link_libraries(octopus PRIVATE sdl)
 target_include_directories(octopus PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/include")
 
