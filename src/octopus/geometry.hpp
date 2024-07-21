@@ -71,9 +71,14 @@ struct Vector {
         return *this;
     }
 
+    T sqLength() const
+    {
+        return x * x + y * y;
+    }
+
     T length() const
     {
-        return std::sqrt(x * x + y * y);
+        return std::sqrt(sqLength());
     }
 
     Norm<T, Tag> norm() const

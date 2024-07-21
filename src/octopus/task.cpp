@@ -39,6 +39,10 @@ void CoroTask::update(float delta)
 
     auto leaf = handle.promise().leaf;
     if (leaf.done()) {
+        if (leaf.promise().exception) {
+            std::rethrow_exception(leaf.promise().exception);
+        }
+
         handle.promise().leaf = leaf.promise().parent;
         std::cerr << "destroying coroutine: " << leaf.address() << "\n";
         leaf.destroy();

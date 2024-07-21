@@ -1,6 +1,8 @@
 #include "build-info.hpp"
+#include "events.hpp"
 #include "geometry.hpp"
 #include "scene.hpp"
+#include "timer.hpp"
 #include "world.hpp"
 
 #include "sdl.hpp"
@@ -14,42 +16,6 @@
 
 #include <format>
 #include <iostream>
-
-using Clock = std::chrono::high_resolution_clock;
-
-class FrameTimer {
-public:
-    explicit FrameTimer(int fps)
-        : _frameDuration(
-            std::chrono::duration_cast<Clock::duration>(
-                std::chrono::duration<float>(1.f / fps)))
-    { }
-
-    int operator()()
-    {
-        auto currentFrame = (Clock::now() - _start) / _frameDuration;
-        auto framesPassed = static_cast<int>(currentFrame - _lastFrame);
-        _lastFrame = currentFrame;
-        return framesPassed;
-    }
-
-    [[nodiscard]] float delta() const
-    {
-        return std::chrono::duration_cast<std::chrono::duration<float>>(
-            _frameDuration).count();
-    }
-
-    void relax() const
-    {
-        auto nextFrameTime = _start + _frameDuration * (_lastFrame + 1);
-        std::this_thread::sleep_until(nextFrameTime);
-    }
-
-private:
-    Clock::duration _frameDuration;
-    Clock::time_point _start = Clock::now();
-    size_t _lastFrame = 0;
-};
 
 struct KeyboardController {
     [[nodiscard]] WorldVector control() const
@@ -103,14 +69,34 @@ int main(int, char*[])
         .frameDuration = 200ms,
     };
 
+    auto spriteForObject = [&heroSprite, &scorpionSprite]
+        (ObjectType objectType) -> const Sprite& {
+            switch (objectType) {
+                case ObjectType::Hero: return heroSprite;
+                case ObjectType::Scorpion: return scorpionSprite;
+            }
+            throw std::runtime_error{std::format(
+                "unknown ObjectType: {}", std::to_underlying(objectType))};
+        };
+
     auto scene = Scene{};
     scene.camera().center(0.f, 0.f);
     scene.camera().viewport(0, 0, window.size().w, window.size().h);
     scene.camera().pixelsPerUnit(32);
     scene.camera().zoom(2);
 
-    scene.addObject(0, heroSprite, {});
-    scene.addObject(1, scorpionSprite, {});
+    std::vector<LifeHolder> lifeHolders;
+
+    lifeHolders.push_back(events.subscribe<AddObjectEvent>(
+        [&scene, &spriteForObject] (const AddObjectEvent& e) {
+            scene.addObject(e.id, spriteForObject(e.type), {});
+        }));
+    lifeHolders.push_back(events.subscribe<MoveObjectEvent>(
+        [&scene] (const MoveObjectEvent& e) {
+            scene.moveObject(
+                e.id,
+                e.position + WorldVector{0, 0.5f * e.height});
+        }));
 
     auto controller = KeyboardController{};
     auto world = World{};
@@ -143,31 +129,24 @@ int main(int, char*[])
         }
 
         if (const int framesPassed = timer(); framesPassed > 0) {
-            world.hero.control = controller.control();
+            world.heroControl() = controller.control();
 
             for (int i = 0; i < framesPassed; i++) {
                 world.update(timer.delta());
             }
 
-            scene.moveObject(0, world.hero.position);
-
-            const auto& scorpion = world.scorpions.front();
-            scene.moveObject(1, scorpion.position + WorldVector{0, 0.5f * scorpion.height});
+            events.deliver();
 
             scene.update((float)framesPassed * timer.delta());
 
             renderer.setDrawColor(50, 50, 50, 255);
             renderer.clear();
-
             scene.render(renderer);
-
             renderer.present();
         }
 
         timer.relax();
     }
-
-
 
     return EXIT_SUCCESS;
 }

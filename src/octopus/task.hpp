@@ -42,33 +42,5 @@ struct Promise {
     std::string functionName;
 };
 
-class WaitFor {
-    using Clock = std::chrono::high_resolution_clock;
-
-public:
-    template <class Rep, class Period>
-    requires std::is_arithmetic_v<Rep>
-    WaitFor(std::chrono::duration<Rep, Period> duration)
-        : _waitUntil(
-            Clock::now() +
-            std::chrono::duration_cast<Clock::duration>(duration))
-    { }
-
-    bool await_ready() const
-    {
-        return Clock::now() >= _waitUntil;
-    }
-
-    bool await_suspend(std::coroutine_handle<>) const
-    {
-        return Clock::now() < _waitUntil;
-    }
-
-    void await_resume() const {}
-
-private:
-
-    Clock::time_point _waitUntil;
+struct WaitFor {
 };
-
-

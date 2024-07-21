@@ -1,5 +1,7 @@
 #pragma once
 
+#include "geometry.hpp"
+
 #include "sdl.hpp"
 
 #include <chrono>
@@ -16,46 +18,16 @@ struct Sprite {
 class Object {
 public:
     Object() = default;
+    Object(Sprite sprite, const WorldPosition& position);
 
-    Object(Sprite sprite, const WorldPosition& position)
-        : _sprite(std::move(sprite))
-        , _position(position)
-        , _startTime(Clock::now())
-        , _currentTime(_startTime)
-    {}
+    [[nodiscard]] const sdl::Texture& texture() const;
+    [[nodiscard]] sdl::Texture& texture();
+    [[nodiscard]] const SDL_Rect& frame() const;
+    [[nodiscard]] const WorldPosition& position() const;
 
-    [[nodiscard]] const sdl::Texture& texture() const
-    {
-        return *_sprite.texture;
-    }
+    void moveTo(const WorldPosition& position);
 
-    [[nodiscard]] sdl::Texture& texture()
-    {
-        return *_sprite.texture;
-    }
-
-    [[nodiscard]] const SDL_Rect& frame() const
-    {
-        auto framesPassed = (_currentTime - _startTime) / _sprite.frameDuration;
-        auto frameIndex = framesPassed % _sprite.frames.size();
-        return _sprite.frames.at(frameIndex);
-    }
-
-    void update(float delta)
-    {
-        _currentTime += std::chrono::duration_cast<Clock::duration>(
-            std::chrono::duration<float>(delta));
-    }
-
-    [[nodiscard]] const WorldPosition& position() const
-    {
-        return _position;
-    }
-
-    void moveTo(const WorldPosition& position)
-    {
-        _position = position;
-    }
+    void update(float delta);
 
 private:
     Sprite _sprite;
@@ -67,62 +39,20 @@ private:
 class Camera {
 public:
     [[nodiscard]] ScreenPosition
-    project(const WorldPosition& worldPosition) const
-    {
-        return ScreenPosition{
-            .x = _viewport.center().x +
-                 (worldPosition.x - _center.x) * screenPixelsPerUnit(),
-            .y = _viewport.center().y +
-                 (_center.y - worldPosition.y) * screenPixelsPerUnit(),
-        };
-    }
+    project(const WorldPosition& worldPosition) const;
 
     [[nodiscard]] WorldPosition
-    restore(const ScreenPosition& screenPosition) const
-    {
-        return WorldPosition{
-            .x = _center.x + (screenPosition.x - _viewport.center().x) /
-                                 screenPixelsPerUnit(),
-            .y = _center.y + (_viewport.center().y - screenPosition.y) /
-                                 screenPixelsPerUnit(),
-        };
-    }
+    restore(const ScreenPosition& screenPosition) const;
 
-    void viewport(int x, int y, int w, int h)
-    {
-        _viewport = ScreenRect{
-            .x = (float)x,
-            .y = (float)y,
-            .w = (float)w,
-            .h = (float)h,
-        };
-    }
+    void viewport(int x, int y, int w, int h);
+    void center(float x, float y);
+    void pixelsPerUnit(float pixelsPerUnit);
 
-    void center(float x, float y)
-    {
-        _center = WorldPosition{x, y};
-    }
-
-    void pixelsPerUnit(float pixelsPerUnit)
-    {
-        _pixelsPerUnit = pixelsPerUnit;
-    }
-
-    void zoom(float zoom)
-    {
-        _zoom = zoom;
-    }
-
-    [[nodiscard]] float zoom() const
-    {
-        return _zoom;
-    }
+    void zoom(float zoom);
+    [[nodiscard]] float zoom() const;
 
 private:
-    [[nodiscard]] float screenPixelsPerUnit() const
-    {
-        return _pixelsPerUnit * _zoom;
-    }
+    [[nodiscard]] float screenPixelsPerUnit() const;
 
     ScreenRect _viewport;
     WorldPosition _center;
@@ -132,51 +62,13 @@ private:
 
 class Scene {
 public:
-    void addObject(size_t id, Sprite sprite, WorldPosition position)
-    {
-        _objects[id] = Object{std::move(sprite), position};
-    }
+    void addObject(size_t id, Sprite sprite, WorldPosition position);
+    void moveObject(size_t id, const WorldPosition& position);
+    void killObject(size_t id);
+    void update(float delta);
+    void render(sdl::Renderer& renderer);
 
-    void moveObject(size_t id, const WorldPosition& position)
-    {
-        _objects.at(id).moveTo(position);
-    }
-
-    void killObject(size_t id)
-    {
-        _objects.erase(id);
-    }
-
-    void update(float delta)
-    {
-        for (auto& [id, object] : _objects) {
-            object.update(delta);
-        }
-    }
-
-    void render(sdl::Renderer& renderer)
-    {
-        for (auto& [id, object] : _objects) {
-            auto screenPosition = _camera.project(object.position());
-
-            renderer.copy(
-                object.texture(),
-                object.frame(),
-                SDL_FRect{
-                    .x = screenPosition.x -
-                         _camera.zoom() * (float)object.frame().w / 2.f,
-                    .y = screenPosition.y -
-                         _camera.zoom() * (float)object.frame().h / 2.f,
-                    .w = _camera.zoom() * (float)object.frame().w,
-                    .h = _camera.zoom() * (float)object.frame().h,
-                });
-        }
-    }
-
-    Camera& camera()
-    {
-        return _camera;
-    }
+    Camera& camera();
 
 private:
     std::map<size_t, Object> _objects;

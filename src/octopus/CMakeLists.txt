@@ -6,7 +6,7 @@ add_executable(octopus
     random.cpp
     task.cpp
     world.cpp
- "scene.cpp" "ai.cpp")
+ "scene.cpp" "ai.cpp" "timer.cpp")
 target_link_libraries(octopus PRIVATE sdl)
 target_include_directories(octopus PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/include")
 
