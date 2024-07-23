@@ -9,6 +9,7 @@ inline Channel events;
 struct AddObjectEvent {
     Entity id;
     ObjectType type;
+    WorldPosition position;
 };
 
 struct MoveObjectEvent {

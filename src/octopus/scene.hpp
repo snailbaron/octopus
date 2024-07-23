@@ -12,7 +12,7 @@ using Clock = std::chrono::high_resolution_clock;
 struct Sprite {
     sdl::Texture* texture = nullptr;
     std::vector<SDL_Rect> frames;
-    Clock::duration frameDuration;
+    Clock::duration frameDuration {std::chrono::milliseconds{200}};
 };
 
 class Object {

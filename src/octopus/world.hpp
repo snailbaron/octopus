@@ -46,9 +46,17 @@ struct AiComponent {
     CoroTask brain;
 };
 
+struct PositionComponent {
+    WorldPosition position;
+    float radius = 0.f;
+};
+
 enum class ObjectType {
     Hero,
     Scorpion,
+    Tree,
+    Chest,
+    House,
 };
 
 class World {

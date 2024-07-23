@@ -101,20 +101,27 @@ CoroTask moveTo(std::string name, SimpleMovementComponent& mov, const WorldPosit
     std::cerr << "target point reached\n";
 }
 
-CoroTask fidget(std::string name, SimpleMovementComponent& mov)
+CoroTask fidgetAround(
+    std::string name,
+    const WorldPosition& point,
+    SimpleMovementComponent& movement)
 {
     std::cerr << "fidget\n";
 
     for (int i = 0; i < 3; i++) {
-        auto targetPoint = randomPointInSquare(mov.position, 1);
+        auto targetPoint = randomPointInSquare(point, 0.5f);
         std::cerr << "moving to " << targetPoint << "\n";
-        co_await moveTo("moveTo", mov, targetPoint);
+        co_await moveTo("moveTo", movement, targetPoint);
     }
 }
 
 CoroTask think(std::string name, Ecs& ecs, Entity entity)
 {
     std::cerr << "think: start\n";
+
+    // suspend at the beginning, to allow passing this function to AI component
+    // upon creation
+    co_await std::suspend_always{};
 
     auto& ai = ecs.component<AiComponent>(entity);
     auto& mov = ecs.component<SimpleMovementComponent>(entity);
@@ -131,7 +138,9 @@ CoroTask think(std::string name, Ecs& ecs, Entity entity)
                 co_await hiss("hiss", entity);
             }
         } else {
-            if (distance(mov.position, hero.position) > 3) {
+            if (distance(mov.position, hero.position) > 5) {
+                co_await fidgetAround("fidget", ai.homePoint, mov);
+            } else if (distance(mov.position, hero.position) > 3) {
                 auto action = dist(random().engine());
                 std::cerr << "action id: " << action << "\n";
                 if (action == 0) {
@@ -139,7 +148,7 @@ CoroTask think(std::string name, Ecs& ecs, Entity entity)
                     co_await approach("approach", mov, hero, 3);
                 } else if (action == 1) {
                     std::cerr << "think: start fidget\n";
-                    co_await fidget("fidget", mov);
+                    co_await fidgetAround("fidget", mov.position, mov);
                 }
             } else {
                 std::cerr << "think: start jump attack\n";

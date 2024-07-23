@@ -66,14 +66,47 @@ int main(int, char*[])
         .frames = {
             SDL_Rect{0, 0, scorpionSize.w, scorpionSize.h},
         },
-        .frameDuration = 200ms,
     };
 
-    auto spriteForObject = [&heroSprite, &scorpionSprite]
+    auto treeTexture =
+        renderer.loadTexture(build_info::assets / "images" / "tree.png");
+    auto treeSize = treeTexture.size();
+    auto treeSprite = Sprite{
+        .texture = &treeTexture,
+        .frames = {
+            SDL_Rect{0, 0, treeSize.w, treeSize.h},
+        },
+    };
+
+    auto chestTexture =
+        renderer.loadTexture(build_info::assets / "images" / "chest.png");
+    auto chestSize = chestTexture.size();
+    auto chestSprite = Sprite{
+        .texture = &chestTexture,
+        .frames = {
+            SDL_Rect{0, 0, chestSize.w, chestSize.h},
+        },
+    };
+
+    auto houseTexture =
+        renderer.loadTexture(build_info::assets / "images" / "house.png");
+    auto houseSize = houseTexture.size();
+    auto houseSprite = Sprite{
+        .texture = &houseTexture,
+        .frames = {
+            SDL_Rect{0, 0, houseSize.w, houseSize.h},
+        },
+    };
+
+    auto spriteForObject =
+        [&heroSprite, &scorpionSprite, &treeSprite, &chestSprite, &houseSprite]
         (ObjectType objectType) -> const Sprite& {
             switch (objectType) {
                 case ObjectType::Hero: return heroSprite;
                 case ObjectType::Scorpion: return scorpionSprite;
+                case ObjectType::Tree: return treeSprite;
+                case ObjectType::Chest: return chestSprite;
+                case ObjectType::House: return houseSprite;
             }
             throw std::runtime_error{std::format(
                 "unknown ObjectType: {}", std::to_underlying(objectType))};
@@ -89,7 +122,7 @@ int main(int, char*[])
 
     lifeHolders.push_back(events.subscribe<AddObjectEvent>(
         [&scene, &spriteForObject] (const AddObjectEvent& e) {
-            scene.addObject(e.id, spriteForObject(e.type), {});
+            scene.addObject(e.id, spriteForObject(e.type), e.position);
         }));
     lifeHolders.push_back(events.subscribe<MoveObjectEvent>(
         [&scene] (const MoveObjectEvent& e) {

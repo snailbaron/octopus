@@ -41,6 +41,3 @@ struct Promise {
     float time = 0.f;
     std::string functionName;
 };
-
-struct WaitFor {
-};

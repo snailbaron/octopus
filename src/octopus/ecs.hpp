@@ -67,7 +67,17 @@ public:
         return _components.at(_componentIndexByEntity.at(entity));
     }
 
+    const Component& component(Entity entity) const
+    {
+        return _components.at(_componentIndexByEntity.at(entity));
+    }
+
     std::span<Component> components()
+    {
+        return _components;
+    }
+
+    std::span<const Component> components() const
     {
         return _components;
     }
@@ -130,7 +140,19 @@ public:
     }
 
     template <class Component>
+    const Component& component(Entity entity) const
+    {
+        return existingStorage<Component>().component(entity);
+    }
+
+    template <class Component>
     std::span<Component> components()
+    {
+        return existingStorage<Component>().components();
+    }
+
+    template <class Component>
+    std::span<const Component> components() const
     {
         return existingStorage<Component>().components();
     }
