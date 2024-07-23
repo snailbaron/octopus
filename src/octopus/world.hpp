@@ -70,4 +70,3 @@ public:
 private:
     Ecs _ecs;
 };
-

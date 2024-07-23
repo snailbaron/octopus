@@ -1,13 +1,14 @@
 ---
 BasedOnStyle: LLVM
-AccessModifierOffset: 0
+AccessModifierOffset: -4
 AlignAfterOpenBracket: AlwaysBreak
 AlignArrayOfStructures: None
 AlignConsecutiveAssignments: None
 AlignConsecutiveBitFields: None
 AlignConsecutiveDeclarations: None
 AlignConsecutiveMacros: None
-AlignConsecutiveShortCaseStatements: None
+AlignConsecutiveShortCaseStatements:
+  Enabled: false
 AlignEscapedNewlines: Right
 AlignOperands: DontAlign
 AlignTrailingComments:
@@ -24,7 +25,7 @@ AllowShortLambdasOnASingleLine: All
 AllowShortLoopsOnASingleLine: false
 AlwaysBreakAfterReturnType: None
 AlwaysBreakBeforeMultilineStrings: false
-AlwaysBreakTemplateDeclarations: Multiline
+AlwaysBreakTemplateDeclarations: Yes
 AttributeMacros: []
 BinPackArguments: false
 BinPackParameters: false
@@ -110,15 +111,6 @@ PenaltyIndentedWhitespace: 0
 PenaltyReturnTypeOnItsOwnLine: 60
 PointerAlignment: Left
 QualifierAlignment: Left
-QualifierOrder:
-  - inline
-  - friend
-  - static
-  - constexpr
-  - volatile
-  - const
-  - restrict
-  - type
 ReferenceAlignment: Pointer
 ReflowComments: true
 RemoveParentheses: Leave
@@ -131,7 +123,7 @@ SortIncludes: CaseInsensitive
 SortUsingDeclarations: Lexicographic
 SpaceAfterCStyleCast: false
 SpaceAfterLogicalNot: false
-SpaceAfterTemplateKeyword: false
+SpaceAfterTemplateKeyword: true
 SpaceAroundPointerQualifiers: Default
 SpaceBeforeAssignmentOperators: true
 SpaceBeforeCaseColon: false

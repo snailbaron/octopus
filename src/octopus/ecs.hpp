@@ -219,6 +219,7 @@ private:
     }
 
     EntityPool _entityPool;
-    std::map<std::type_index, std::unique_ptr<AbstractComponentStorage>> _storages;
+    std::map<std::type_index, std::unique_ptr<AbstractComponentStorage>>
+        _storages;
     std::map<Entity, std::vector<std::type_index>> _entityComponentTypes;
 };

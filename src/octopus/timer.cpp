@@ -5,7 +5,7 @@
 FrameTimer::FrameTimer(int fps)
     : _frameDuration(std::chrono::duration_cast<Clock::duration>(
           std::chrono::duration<float>(1.f / fps)))
-{}
+{ }
 
 int FrameTimer::operator()()
 {

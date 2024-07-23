@@ -31,8 +31,8 @@ public:
     }
 
 private:
-    T _x {};
-    T _y {};
+    T _x{};
+    T _y{};
 };
 
 template <class T, class Tag>
@@ -86,8 +86,8 @@ struct Vector {
         return {x, y};
     }
 
-    T x {};
-    T y {};
+    T x{};
+    T y{};
 };
 
 template <class T, class Tag>
@@ -165,8 +165,8 @@ struct Point {
         return *this;
     }
 
-    T x {};
-    T y {};
+    T x{};
+    T y{};
 };
 
 template <class T, class Tag>
@@ -202,10 +202,10 @@ struct Rect {
         return {x + w / 2, y + h / 2};
     }
 
-    T x {};
-    T y {};
-    T w {};
-    T h {};
+    T x{};
+    T y{};
+    T w{};
+    T h{};
 };
 
 template <class T, class Tag>
@@ -213,7 +213,6 @@ T distance(const Point<T, Tag>& lhs, const Point<T, Tag>& rhs)
 {
     return (rhs - lhs).length();
 }
-
 
 struct WorldTag;
 struct ScreenTag;

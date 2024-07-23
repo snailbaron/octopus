@@ -5,7 +5,8 @@
 bool CoroTask::await_ready()
 {
     if (handle.done()) {
-        //std::cerr << "destroying coroutine before await: " << handle.address() << "\n";
+        // std::cerr << "destroying coroutine before await: " <<
+        // handle.address() << "\n";
         handle.destroy();
         return true;
     }
@@ -16,7 +17,8 @@ void CoroTask::await_suspend(std::coroutine_handle<Promise> suspended) const
 {
     std::cerr << std::format(
         "{} awaits {}\n",
-        suspended.promise().functionName, handle.promise().functionName);
+        suspended.promise().functionName,
+        handle.promise().functionName);
 
     std::cerr << std::format(
         "setting {}'s leaf to {}\n",
@@ -48,7 +50,8 @@ void CoroTask::update(float delta)
         leaf.destroy();
     }
 
-    std::cerr << "resuming leaf: " << handle.promise().leaf.promise().functionName << "\n";
+    std::cerr << "resuming leaf: "
+              << handle.promise().leaf.promise().functionName << "\n";
     handle.promise().leaf.resume();
 }
 
@@ -56,7 +59,7 @@ CoroTask Promise::get_return_object()
 {
     auto currentHandle = std::coroutine_handle<Promise>::from_promise(*this);
 
-    //std::cerr << "created coroutine: " << currentHandle.address() << "\n";
+    // std::cerr << "created coroutine: " << currentHandle.address() << "\n";
 
     root = currentHandle;
     leaf = currentHandle;
@@ -68,6 +71,4 @@ void Promise::unhandled_exception()
     exception = std::current_exception();
 }
 
-void Promise::return_void() const
-{
-}
+void Promise::return_void() const { }

@@ -86,8 +86,8 @@ public:
     Texture loadTexture(const std::filesystem::path& file);
     Texture loadTexture(void* mem, int size);
 
-    void copy(
-        Texture& texture, const SDL_Rect& srcrect, const SDL_FRect& dstrect);
+    void
+    copy(Texture& texture, const SDL_Rect& srcrect, const SDL_FRect& dstrect);
 
     void setDrawColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
 
@@ -95,9 +95,9 @@ public:
     void present();
 };
 
-class RWops : public helper::Wrapper<
-    SDL_RWops,
-    [] (SDL_RWops* ops) { SDL_RWclose(ops); }> {
+class RWops : public helper::Wrapper<SDL_RWops, [](SDL_RWops* ops) {
+    SDL_RWclose(ops);
+}> {
 public:
     RWops(const std::filesystem::path& file, const char* mode);
     RWops(void* mem, int size);

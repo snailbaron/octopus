@@ -14,12 +14,12 @@ void check(int errorCode)
 
 Error::Error(const char* message, std::source_location sl)
     : _message(std::format(
-        "{}: {}:{} ({}): {}",
-        sl.file_name(),
-        sl.line(),
-        sl.column(),
-        sl.function_name(),
-        message))
+          "{}: {}:{} ({}): {}",
+          sl.file_name(),
+          sl.line(),
+          sl.column(),
+          sl.function_name(),
+          message))
 { }
 
 const char* Error::what() const noexcept

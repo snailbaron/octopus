@@ -5,7 +5,7 @@ Object::Object(Sprite sprite, const WorldPosition& position)
     , _position(position)
     , _startTime(Clock::now())
     , _currentTime(_startTime)
-{}
+{ }
 
 [[nodiscard]] const sdl::Texture& Object::texture() const
 {
@@ -45,9 +45,9 @@ Camera::project(const WorldPosition& worldPosition) const
 {
     return ScreenPosition{
         .x = _viewport.center().x +
-             (worldPosition.x - _center.x) * screenPixelsPerUnit(),
+            (worldPosition.x - _center.x) * screenPixelsPerUnit(),
         .y = _viewport.center().y +
-             (_center.y - worldPosition.y) * screenPixelsPerUnit(),
+            (_center.y - worldPosition.y) * screenPixelsPerUnit(),
     };
 }
 
@@ -56,9 +56,9 @@ Camera::restore(const ScreenPosition& screenPosition) const
 {
     return WorldPosition{
         .x = _center.x +
-             (screenPosition.x - _viewport.center().x) / screenPixelsPerUnit(),
+            (screenPosition.x - _viewport.center().x) / screenPixelsPerUnit(),
         .y = _center.y +
-             (_viewport.center().y - screenPosition.y) / screenPixelsPerUnit(),
+            (_viewport.center().y - screenPosition.y) / screenPixelsPerUnit(),
     };
 }
 
@@ -129,9 +129,9 @@ void Scene::render(sdl::Renderer& renderer)
             object.frame(),
             SDL_FRect{
                 .x = screenPosition.x -
-                     _camera.zoom() * (float)object.frame().w / 2.f,
+                    _camera.zoom() * (float)object.frame().w / 2.f,
                 .y = screenPosition.y -
-                     _camera.zoom() * (float)object.frame().h / 2.f,
+                    _camera.zoom() * (float)object.frame().h / 2.f,
                 .w = _camera.zoom() * (float)object.frame().w,
                 .h = _camera.zoom() * (float)object.frame().h,
             });

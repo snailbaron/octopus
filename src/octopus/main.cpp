@@ -52,9 +52,10 @@ int main(int, char*[])
     auto heroSize = heroTexture.size();
     auto heroSprite = Sprite{
         .texture = &heroTexture,
-        .frames = {
-            SDL_Rect{0, 0, heroSize.w, heroSize.h},
-        },
+        .frames =
+            {
+                SDL_Rect{0, 0, heroSize.w, heroSize.h},
+            },
         .frameDuration = 200ms,
     };
 
@@ -63,9 +64,10 @@ int main(int, char*[])
     auto scorpionSize = scorpionTexture.size();
     auto scorpionSprite = Sprite{
         .texture = &scorpionTexture,
-        .frames = {
-            SDL_Rect{0, 0, scorpionSize.w, scorpionSize.h},
-        },
+        .frames =
+            {
+                SDL_Rect{0, 0, scorpionSize.w, scorpionSize.h},
+            },
     };
 
     auto treeTexture =
@@ -73,9 +75,10 @@ int main(int, char*[])
     auto treeSize = treeTexture.size();
     auto treeSprite = Sprite{
         .texture = &treeTexture,
-        .frames = {
-            SDL_Rect{0, 0, treeSize.w, treeSize.h},
-        },
+        .frames =
+            {
+                SDL_Rect{0, 0, treeSize.w, treeSize.h},
+            },
     };
 
     auto chestTexture =
@@ -83,9 +86,10 @@ int main(int, char*[])
     auto chestSize = chestTexture.size();
     auto chestSprite = Sprite{
         .texture = &chestTexture,
-        .frames = {
-            SDL_Rect{0, 0, chestSize.w, chestSize.h},
-        },
+        .frames =
+            {
+                SDL_Rect{0, 0, chestSize.w, chestSize.h},
+            },
     };
 
     auto houseTexture =
@@ -93,24 +97,25 @@ int main(int, char*[])
     auto houseSize = houseTexture.size();
     auto houseSprite = Sprite{
         .texture = &houseTexture,
-        .frames = {
-            SDL_Rect{0, 0, houseSize.w, houseSize.h},
-        },
+        .frames =
+            {
+                SDL_Rect{0, 0, houseSize.w, houseSize.h},
+            },
     };
 
     auto spriteForObject =
-        [&heroSprite, &scorpionSprite, &treeSprite, &chestSprite, &houseSprite]
-        (ObjectType objectType) -> const Sprite& {
-            switch (objectType) {
-                case ObjectType::Hero: return heroSprite;
-                case ObjectType::Scorpion: return scorpionSprite;
-                case ObjectType::Tree: return treeSprite;
-                case ObjectType::Chest: return chestSprite;
-                case ObjectType::House: return houseSprite;
-            }
-            throw std::runtime_error{std::format(
-                "unknown ObjectType: {}", std::to_underlying(objectType))};
-        };
+        [&heroSprite, &scorpionSprite, &treeSprite, &chestSprite, &houseSprite](
+            ObjectType objectType) -> const Sprite& {
+        switch (objectType) {
+            case ObjectType::Hero: return heroSprite;
+            case ObjectType::Scorpion: return scorpionSprite;
+            case ObjectType::Tree: return treeSprite;
+            case ObjectType::Chest: return chestSprite;
+            case ObjectType::House: return houseSprite;
+        }
+        throw std::runtime_error{std::format(
+            "unknown ObjectType: {}", std::to_underlying(objectType))};
+    };
 
     auto scene = Scene{};
     scene.camera().center(0.f, 0.f);
@@ -121,15 +126,13 @@ int main(int, char*[])
     std::vector<LifeHolder> lifeHolders;
 
     lifeHolders.push_back(events.subscribe<AddObjectEvent>(
-        [&scene, &spriteForObject] (const AddObjectEvent& e) {
+        [&scene, &spriteForObject](const AddObjectEvent& e) {
             scene.addObject(e.id, spriteForObject(e.type), e.position);
         }));
-    lifeHolders.push_back(events.subscribe<MoveObjectEvent>(
-        [&scene] (const MoveObjectEvent& e) {
-            scene.moveObject(
-                e.id,
-                e.position + WorldVector{0, 0.5f * e.height});
-        }));
+    lifeHolders.push_back(events.subscribe<
+                          MoveObjectEvent>([&scene](const MoveObjectEvent& e) {
+        scene.moveObject(e.id, e.position + WorldVector{0, 0.5f * e.height});
+    }));
 
     auto controller = KeyboardController{};
     auto world = World{};

@@ -66,32 +66,40 @@ void updateEnemies(Ecs& ecs, float delta)
 World::World()
 {
     auto hero = _ecs.create();
-    _ecs.add(hero, SmoothMovementComponent{
-        .position = {0, 0},
-    });
+    _ecs.add(
+        hero,
+        SmoothMovementComponent{
+            .position = {0, 0},
+        });
     events.push(AddObjectEvent{
         .id = hero,
         .type = ObjectType::Hero,
     });
 
     auto scorpion = _ecs.create();
-    _ecs.add(scorpion, SimpleMovementComponent{
-        .position = {-5, 3},
-    });
-    _ecs.add(scorpion, AiComponent{
-        .homePoint = {-5, 3},
-        .brain = think("think", _ecs, scorpion),
-    });
+    _ecs.add(
+        scorpion,
+        SimpleMovementComponent{
+            .position = {-5, 3},
+        });
+    _ecs.add(
+        scorpion,
+        AiComponent{
+            .homePoint = {-5, 3},
+            .brain = think("think", _ecs, scorpion),
+        });
     events.push(AddObjectEvent{
         .id = scorpion,
         .type = ObjectType::Scorpion,
     });
 
     auto tree = _ecs.create();
-    _ecs.add(tree, PositionComponent{
-        .position = {3, 2},
-        .radius = 1,
-    });
+    _ecs.add(
+        tree,
+        PositionComponent{
+            .position = {3, 2},
+            .radius = 1,
+        });
     events.push(AddObjectEvent{
         .id = tree,
         .type = ObjectType::Tree,
@@ -99,10 +107,12 @@ World::World()
     });
 
     auto chest = _ecs.create();
-    _ecs.add(chest, PositionComponent{
-        .position = {4, -3},
-        .radius = 1,
-    });
+    _ecs.add(
+        chest,
+        PositionComponent{
+            .position = {4, -3},
+            .radius = 1,
+        });
     events.push(AddObjectEvent{
         .id = chest,
         .type = ObjectType::Chest,
@@ -110,9 +120,11 @@ World::World()
     });
 
     auto house = _ecs.create();
-    _ecs.add(house, PositionComponent{
-        .position = {1, -5},
-    });
+    _ecs.add(
+        house,
+        PositionComponent{
+            .position = {1, -5},
+        });
     events.push(AddObjectEvent{
         .id = house,
         .type = ObjectType::House,

@@ -83,7 +83,8 @@ CoroTask jumpAttack(
     std::cerr << "jumpAttack: finish\n";
 }
 
-CoroTask moveTo(std::string name, SimpleMovementComponent& mov, const WorldPosition& point)
+CoroTask moveTo(
+    std::string name, SimpleMovementComponent& mov, const WorldPosition& point)
 {
     std::cerr << "move to: " << point << "\n";
 

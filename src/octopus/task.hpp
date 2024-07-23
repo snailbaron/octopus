@@ -14,7 +14,7 @@ struct CoroTask {
 
     bool await_ready();
     void await_suspend(std::coroutine_handle<Promise> suspended) const;
-    void await_resume() {}
+    void await_resume() { }
 
     void update(float delta);
 
@@ -28,8 +28,17 @@ struct Promise {
     { }
 
     CoroTask get_return_object();
-    std::suspend_never initial_suspend() noexcept { return {}; };
-    std::suspend_always final_suspend() noexcept { return {}; };
+
+    std::suspend_never initial_suspend() noexcept
+    {
+        return {};
+    };
+
+    std::suspend_always final_suspend() noexcept
+    {
+        return {};
+    };
+
     void unhandled_exception();
     void return_void() const;
 

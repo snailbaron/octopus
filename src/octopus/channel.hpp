@@ -55,9 +55,10 @@ public:
 
         _subscriberMap[typeIndex].push_back(Subscription{
             .tracker = lifeHolder.tracker(),
-            .handler = [handler](const std::any& event) {
-                handler(std::any_cast<const Event&>(event));
-            },
+            .handler =
+                [handler](const std::any& event) {
+                    handler(std::any_cast<const Event&>(event));
+                },
         });
     }
 
